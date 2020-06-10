@@ -1,4 +1,6 @@
+import sys
 from room import Room
+from player import Player
 
 # Declare all the rooms
 
@@ -33,12 +35,31 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+commands = [
+    {
+        "symbol": "n",
+        "description": "Move to North"
+    },
+    {
+        "symbol": "s",
+        "description": "Move to South"
+    },
+    {
+        "symbol": "e",
+        "description": "Move to East"
+    },
+    {
+        "symbol": "w",
+        "description": "Move to West"
+    },
+]
+
 #
 # Main
 #
 
 # Make a new player object that is currently in the 'outside' room.
-
+player = Player("player1", room['outside'])
 # Write a loop that:
 #
 # * Prints the current room name
@@ -49,3 +70,26 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+# print(player.current_room)
+print("\ntype q to quit\n")
+for c in commands:
+    print(f"{c['description']} ({c['symbol']})")
+while True:
+    print(f"\n{player.current_room}\n")
+    choice = input("Please choice the direction to move the player: ")
+
+    try:
+        if choice == 'q':
+            break
+        key = f"{choice}_to"
+        current_room = getattr(player.current_room, key)
+
+        if current_room == None:
+            print("There is no room in this direction")
+        else:
+            player.current_room = current_room
+    except AttributeError:
+        print("\nPlease choice the correct direction")
+    except Exception as e:
+        print(sys.exc_info())
+        raise
