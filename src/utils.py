@@ -30,9 +30,22 @@ get_controls = [
     },
 ]
 
-commands = move_controls + get_controls
+help_controls = [
+    {
+        "control": "h",
+        "description": "Help"
+    },
+    {
+        "control": "i or inventory",
+        "description": "Show player inventories"
+    },
+]
+
+commands = move_controls + get_controls + help_controls
 
 
 def print_commands():
+    print("\nHelp")
+    print("=====")
     for c in commands:
-        print(Fore.GREEN, f"{c['description']} ({c['control']})")
+        print(Fore.GREEN, f"({c['control']}) {c['description']}")

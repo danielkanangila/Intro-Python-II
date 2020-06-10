@@ -90,7 +90,7 @@ or (inventory) Inventory, (get :item name) Pick Item \
             else:
                 player.current_room = current_room
 
-        if (choice == "i"):
+        if (choice == "i") | (choice == "inventory"):
             print(f"\n{player}")
 
         choice = choice.split(" ")
