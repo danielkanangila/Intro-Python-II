@@ -1,6 +1,7 @@
 import sys
 from room import Room
 from player import Player
+from colorama import Fore
 
 # Declare all the rooms
 
@@ -71,11 +72,11 @@ player = Player("player1", room['outside'])
 #
 # If the user enters "q", quit the game.
 # print(player.current_room)
-print("\ntype q to quit\n")
+print(Fore.GREEN, "\ntype q to quit\n")
 for c in commands:
-    print(f"{c['description']} ({c['symbol']})")
+    print(Fore.GREEN, f"{c['description']} ({c['symbol']})")
 while True:
-    print(f"\n{player.current_room}\n")
+    print(Fore.GREEN, f"\n{player.current_room}\n")
     choice = input("Please choice the direction to move the player: ")
 
     try:
@@ -85,11 +86,11 @@ while True:
         current_room = getattr(player.current_room, key)
 
         if current_room == None:
-            print("There is no room in this direction")
+            print(Fore.YELLOW, "\nThere is no room in this direction")
         else:
             player.current_room = current_room
     except AttributeError:
-        print("\nPlease choice the correct direction")
+        print(Fore.RED, "\nPlease choice the correct direction")
     except Exception as e:
         print(sys.exc_info())
         raise
