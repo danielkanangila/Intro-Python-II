@@ -4,6 +4,7 @@ from player import Player
 from colorama import Fore
 from utils import *
 from item import Item
+from pyfiglet import Figlet
 
 table = Item("Table", "Tropical black wood table")
 bag = Item("Backpack", "Tactical Army backpack")
@@ -64,25 +65,44 @@ player = Player("player1", room['outside'])
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
-print(Fore.GREEN, "\ntype q to quit\n")
-print_commands()
+f = Figlet(font="slant")
+print(f.renderText("Welcome to Cave"))
+print(Fore.GREEN, "\ntype (q) to quit, (h) for help\n")
 
 while True:
     print(Fore.GREEN, f"\n{player.current_room}\n")
-    choice = input("Please choice the direction to move the player: ")
+    choice = input("(n) North, (s) South, (e) East, (w) West \n(i) \
+or (inventory) Inventory, (get :item name) Pick Item \
+\n(drop : item name), (h) help, (q) quit: ")
 
     try:
         if choice == 'q':
             break
-        key = f"{choice}_to"
-        current_room = getattr(player.current_room, key)
+        if choice == 'h':
+            print_commands()
 
-        if current_room == None:
-            print(Fore.YELLOW, "\nThere is no room in this direction")
-        else:
-            player.current_room = current_room
-    except AttributeError:
-        print(Fore.RED, "\nPlease choice the correct direction")
+        if player.is_moving(choice):
+            key = f"{choice}_to"
+            current_room = getattr(player.current_room, key)
+
+            if current_room == None:
+                print(Fore.YELLOW, "\nThere is no room in this direction")
+            else:
+                player.current_room = current_room
+
+        if (choice == "i"):
+            print(f"\n{player}")
+
+        choice = choice.split(" ")
+
+        if (len(choice) == 2) & (choice[0] == "get"):
+            player.on_get(choice[1])
+
+        if (len(choice) == 2) & (choice[0] == "drop"):
+            player.on_drop(choice[1])
+
+    except AttributeError as e:
+        print(Fore.RED, f"\n{e}")
     except Exception as e:
         print(sys.exc_info())
         raise

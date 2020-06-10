@@ -1,6 +1,6 @@
 from colorama import Fore
 
-commands = [
+move_controls = [
     {
         "control": "n",
         "description": "Move to North"
@@ -18,6 +18,19 @@ commands = [
         "description": "Move to West"
     },
 ]
+
+get_controls = [
+    {
+        "control": "get :item name",
+        "description": "Get item"
+    },
+    {
+        "control": "drop :item name",
+        "description": "Drop item"
+    },
+]
+
+commands = move_controls + get_controls
 
 
 def print_commands():

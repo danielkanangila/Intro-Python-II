@@ -1,10 +1,13 @@
 # Implement a class to hold room information. This should have name and
 # description attributes.
-class Room:
+from action import Action
+
+
+class Room(Action):
     def __init__(self, name, description, items=[]):
+        super().__init__(items)
         self.name = name
         self.description = description
-        self.items = items
         self.n_to = None
         self.s_to = None
         self.e_to = None
