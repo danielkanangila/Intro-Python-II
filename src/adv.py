@@ -1,6 +1,7 @@
 import sys
 from room import Room
 from player import Player
+from trap import Trap
 from colorama import Fore
 from utils import *
 from item import Item
@@ -34,7 +35,7 @@ the distance, but there is no way across the chasm.""", [weapon1, weapon5, weapo
     'narrow':   Room("Narrow Passage", """The narrow passage bends here from west
 to north. The smell of gold permeates the air.""", [drink, drink, sword]),
     'trap': Room("Trapped Passage", """The trapped passage which leads to the treasure room. 
-You can stay only 15 seconds in this room."""),
+You can only 3 attempt to escape to this room."""),
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
 chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south.""", [weapon1, weapon2, weapon3, weapon4, weapon5, drink, drink]),
@@ -88,13 +89,21 @@ or (inventory) Inventory, (get :item name) Pick Item \
             print_commands()
 
         if player.is_moving(choice):
-            key = f"{choice}_to"
-            current_room = getattr(player.current_room, key)
+            current_room = player.current_room.get_next_room(choice)
 
             if current_room == None:
                 print(Fore.YELLOW, "\nThere is no room in this direction")
             else:
                 player.current_room = current_room
+                if player.current_room.name == "Trapped Passage":
+                    print("\n\n")
+                    trap = Trap(player)
+                    res = trap.trapped()
+                    if (res == "timeout"):
+                        print(f.renderText("Game Over"))
+                        break
+                    else:
+                        player.current_room = res
 
         if (choice == "i") | (choice == "inventory"):
             print(f"\n{player}")

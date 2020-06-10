@@ -21,3 +21,10 @@ class Room(Action):
             i += 1
 
         return output
+
+    def get_next_room(self, choice):
+        try:
+            direction = f"{choice}_to"
+            return getattr(self, direction)
+        except Exception:
+            return False
