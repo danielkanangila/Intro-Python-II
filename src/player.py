@@ -2,13 +2,21 @@
 # currently.
 from utils import *
 from action import Action
+from room import Room
 
 
 class Player(Action):
-    def __init__(self, name, current_room):
+
+    # store player movement history
+    trace = {}
+    # the last player action
+    last_action: str = ""
+    current_room: Room = None
+
+    def __init__(self, name, current_room: Room):
         super()
         self.name = name
-        self.current_room = current_room
+        self.change_room(current_room)
 
     def __str__(self):
         output = f"Name: {self.name}:\n\n"
@@ -41,3 +49,20 @@ class Player(Action):
 
         self.remove_item(item_name)
         self.current_room.add_item(item)
+
+    # update player movement hostory
+    def update_trace(self, action: str):
+        if action in self.trace:
+            self.trace[action] = self.trace[action] + 1
+        else:
+            self.trace[action] = 1
+
+    # change player current room and movement history
+    def change_room(self, current_room: Room):
+        # change current room
+        self.current_room = current_room
+
+        # update trace and last action
+        action_name = self.get_action_by_name(current_room.name)
+        self.last_action = action_name
+        self.update_trace(action_name)

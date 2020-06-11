@@ -6,6 +6,7 @@ from colorama import Fore
 from utils import *
 from item import Item
 from pyfiglet import Figlet
+from score import Score
 
 table = Item("Table", "Tropical black wood table")
 bag = Item("Backpack", "Tactical Army backpack")
@@ -30,10 +31,10 @@ passages run north and east.""", [table, bag, drink, weapon1]),
 
     'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling
 into the darkness. Ahead to the north, a light flickers in
-the distance, but there is no way across the chasm.""", [weapon1, weapon5, weapon3]),
+the distance, but there is no way across the chasm.""", [sword, weapon1, weapon5, weapon3]),
 
     'narrow':   Room("Narrow Passage", """The narrow passage bends here from west
-to north. The smell of gold permeates the air.""", [drink, drink, sword]),
+to north. The smell of gold permeates the air.""", [drink, drink]),
     'trap': Room("Trapped Passage", """The trapped passage which leads to the treasure room. 
 You can only 3 attempt to escape to this room."""),
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
@@ -72,12 +73,19 @@ player = Player("player1", room['outside'])
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+# clean termina
+print(chr(27) + "[2J")
 f = Figlet(font="slant")
 print(f.renderText("Welcome to Cave"))
 print(Fore.GREEN, "\ntype (q) to quit, (h) for help\n")
 
+# instantiate score
+score = Score()
+
 while True:
     print(Fore.GREEN, f"\n{player.current_room}\n")
+    print(f"============= {score} =============")
     choice = input("(n) North, (s) South, (e) East, (w) West \n(i) \
 or (inventory) Inventory, (get :item name) Pick Item \
 \n(drop : item name), (h) help, (q) quit: ")
@@ -88,13 +96,20 @@ or (inventory) Inventory, (get :item name) Pick Item \
         if choice == 'h':
             print_commands()
 
+        # if choice equal to `n` | `s` | `e` | `w`
         if player.is_moving(choice):
+            # get the nex room following the choice
             current_room = player.current_room.get_next_room(choice)
+            # update score
+            score.update(player)
 
             if current_room == None:
                 print(Fore.YELLOW, "\nThere is no room in this direction")
             else:
-                player.current_room = current_room
+                # update player current room
+                player.change_room(current_room)
+
+                # Trapped player if current room equal to trapped passage
                 if player.current_room.name == "Trapped Passage":
                     print("\n\n")
                     trap = Trap(player)
@@ -103,16 +118,19 @@ or (inventory) Inventory, (get :item name) Pick Item \
                         print(f.renderText("Game Over"))
                         break
                     else:
-                        player.current_room = res
-
+                        player.change_room(res)
+        # Print player item inventories
         if (choice == "i") | (choice == "inventory"):
             print(f"\n{player}")
 
+        # if input is `verb` `object`
         choice = choice.split(" ")
 
+        # GET `item` action
         if (len(choice) == 2) & (choice[0] == "get"):
             player.on_get(choice[1])
 
+        # DROP `item` action
         if (len(choice) == 2) & (choice[0] == "drop"):
             player.on_drop(choice[1])
 
